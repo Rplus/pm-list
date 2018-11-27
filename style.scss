@@ -1,0 +1,84 @@
+:root {
+  --iv-percentage: 100;
+  --sprite-grid-col: 28;
+  --sprite-grid-row: 18;
+  --img-size: 80px;
+  --pm-sort-by: var(--pm-pokedex);
+  --pm-sort-dir: -1;
+}
+
+body {
+  margin: 0;
+}
+
+button {
+  font-family: monospace;
+}
+
+
+.app {
+  text-align: center;
+}
+
+.saved-lists {
+  width: fit-content;
+  margin: 2em auto;
+  text-align: left;
+  list-style-type: square;
+}
+
+.list {
+  text-align: center;
+  font-size: 0;
+}
+
+.pm {
+  position: relative;
+  width: 120px;
+  height: 110px;
+  display: inline-block;
+  box-shadow: inset 0 0 1px;
+  cursor: pointer;
+  overflow: hidden;
+  font-size: 1rem;
+  color: #999;
+
+  &::before {
+    content: '#';
+    color: #ccc;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: var(--img-size);
+    height: var(--img-size);
+    left: 0;
+    right: 0;
+    bottom: 5px;
+    margin: auto;
+    background-image: url(./sprite1-4.png);
+    background-size:
+      calc(var(--sprite-grid-col) * var(--img-size))
+      calc(var(--sprite-grid-row) * var(--img-size));
+    background-repeat: no-repeat;
+    background-position:
+      calc(var(--pm-col) * var(--img-size) * -1)
+      calc(var(--pm-row) * var(--img-size) * -1);
+  }
+
+
+  &[data-state="1"] {
+    background-color: #ffc;
+  }
+}
+
+.export-link {
+  &::before { content: '< '; }
+  &::after { content: ' >'; }
+}
+
+.footer {
+  margin-top: 2em;
+  margin-bottom: 3em;
+}
