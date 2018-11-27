@@ -194,7 +194,7 @@ elm.export.addEventListener('click', () => {
     name: name,
     dex: localStorage.getItem(`T=${name}`),
   });
-  elm.exportLink.href = '/';
+  elm.exportLink.href = './';
   elm.exportLink.search = para.toString();
   elm.exportLink.innerText = '...';
 
