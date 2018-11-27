@@ -41,7 +41,8 @@ let init = () => {
       updatePmState(dex, true);
     });
   }
-  location.hash = '';
+
+  history.pushState(null, null, location.href.replace(location.search, ''));
 };
 
 let renderSavedNames = () => {
