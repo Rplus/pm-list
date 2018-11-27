@@ -9,6 +9,7 @@ let elm = {
   list: $('.list'),
   saved: $('.saved-lists'),
   title: $('.title'),
+  reset: $('.reset'),
   setName: $('.set-name'),
   export: $('.export'),
   exportLink: $('.export-link'),
@@ -83,6 +84,12 @@ let updateMutilState = (newStates) => {
     }
   }
 };
+
+elm.reset.addEventListener('click', () => {
+  console.log('reset');
+  updateMutilState([]);
+});
+
 elm.setName.addEventListener('click', () => {
   saveState();
   renderSavedNames();
