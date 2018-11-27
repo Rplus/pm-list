@@ -73,6 +73,16 @@ let list = {
   input: elm.title
 };
 
+let updateMutilState = (newStates) => {
+  for (let dex in pmMap.state) {
+    let oldPmState = pmMap.state[dex];
+    let newPmState = (newStates.indexOf(dex) !== -1) ? 1 : 0;
+
+    if (newPmState !== oldPmState) {
+      updatePmState(dex, newPmState);
+    }
+  }
+};
 elm.setName.addEventListener('click', () => {
   saveState();
   renderSavedNames();
@@ -96,14 +106,7 @@ elm.saved.addEventListener('click', (e) => {
       let newState = localStorage.getItem(target.dataset.name);
       let newStates = newState.split('-');
 
-      for (let dex in pmMap.state) {
-        let oldPmState = pmMap.state[dex];
-        let newPmState = (newStates.indexOf(dex) !== -1) ? 1 : 0;
-
-        if (newPmState !== oldPmState) {
-          updatePmState(dex, newPmState);
-        }
-      }
+      updateMutilState(newStates);
       break;
 
     default:
