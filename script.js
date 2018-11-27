@@ -28,7 +28,7 @@ let init = () => {
 
   if (name) {
     list.name = name;
-    _dex = localStorage.getItem(name) || '';
+    _dex = localStorage.getItem(`T=${name}`) || '';
   }
 
   if (dex || _dex) {
@@ -47,12 +47,12 @@ let init = () => {
 let renderSavedNames = () => {
   elm.saved.innerHTML =
   Object.keys(localStorage)
-  .filter(name => name !== 'latestName')
+  .filter(name => /^T\=/.test(name))
   .map(name => {
     return (
       `<li>
         <button data-name="${name}" data-action="delete">x</button>
-        <button data-name="${name}" data-action="replace">${name}</button>
+        <button data-name="${name}" data-action="replace">${name.replace(/^T\=/, '')}</button>
       </li>`
     );
   }).join('');
@@ -90,7 +90,7 @@ elm.saved.addEventListener('click', (e) => {
       break;
 
     case 'replace':
-      list.name = target.dataset.name;
+      list.name = target.dataset.name.replace(/^T\=/, '');
 
       let newState = localStorage.getItem(target.dataset.name);
       let newStates = newState.split('-');
@@ -157,7 +157,7 @@ let updatePmState = (dex, state) =>{
 
 let saveState = () => {
   let state = Object.keys(pmMap.state).filter(dex => pmMap.state[dex]).join('-');
-  localStorage.setItem(list.name, state);
+  localStorage.setItem(`T=${list.name}`, state);
   list.name = list.name;
 };
 
@@ -181,7 +181,7 @@ elm.export.addEventListener('click', () => {
   let name = list.name;
   let para = new URLSearchParams({
     name: name,
-    dex: localStorage.getItem(name),
+    dex: localStorage.getItem(`T=${name}`),
   });
   elm.exportLink.href = '/';
   elm.exportLink.search = para.toString();
