@@ -86,3 +86,32 @@ button {
   margin-top: 2em;
   margin-bottom: 3em;
 }
+
+#show-unchecked {
+  display: none;
+}
+
+#show-unchecked:not(:checked) {
+  ~ .list .pm[data-state="0"] {
+    display: none;
+  }
+
+  ~ label[for="show-unchecked"] {
+    &::before {
+      content: '🙈 隱藏未選';
+    }
+  }
+}
+
+label[for="show-unchecked"] {
+  &::before {
+    content: '👁️ 顯示未選';
+  }
+
+  display: inline-block;
+  font-size: 1.5em;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  border: 1px dotted #aaa;
+  padding: 0 10px;
+}
