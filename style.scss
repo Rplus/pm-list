@@ -9,6 +9,7 @@
 
 body {
   margin: 0;
+  overflow: scroll;
 }
 
 button {
@@ -98,20 +99,45 @@ button {
 
   ~ label[for="show-unchecked"] {
     &::before {
-      content: '🙈 隱藏未選';
+      border-color: transparent;
+      opacity: 0.5;
+    }
+    &::after {
+      border-color: #aaa;
+      opacity: 1;
     }
   }
 }
 
 label[for="show-unchecked"] {
   &::before {
-    content: '👁️ 顯示未選';
+    content: '👁️ 顯示';
+    position: absolute;
+    right: 90%;
+    bottom: 60%;
+    width: max-content;
+    padding: 0 5px 0 10px;
+    font-size: 1rem;
+    border: 1px dotted #aaa;
   }
 
+  &::after {
+    content: '🙈 隱藏';
+    position: absolute;
+    top: 60%;
+    right: 90%;
+    width: max-content;
+    padding: 0 5px 0 10px;
+    font-size: 1rem;
+    border: 1px dotted transparent;
+    opacity: 0.5;
+  }
+
+  position: relative;
   display: inline-block;
   font-size: 1.5em;
-  margin-bottom: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
   cursor: pointer;
-  border: 1px dotted #aaa;
   padding: 0 10px;
 }
