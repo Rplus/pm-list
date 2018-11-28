@@ -86,7 +86,10 @@ let updateMutilState = (newStates) => {
 };
 
 elm.reset.addEventListener('click', () => {
-  console.log('reset');
+  let ans = confirm(`將清除 [ ${list.name} ] 目前的勾選，是否繼續？`);
+  if (!ans) {
+    return;
+  }
   updateMutilState([]);
 });
 
