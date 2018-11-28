@@ -106,7 +106,8 @@ elm.saved.addEventListener('click', (e) => {
   }
   switch (target.dataset.action) {
     case 'delete':
-      localStorage.removeItem(target.dataset.name);
+      let ans = confirm(`將刪除 [ ${target.dataset.name.replace(/^T\=/, '')} ] 紀錄，是否繼續？`);
+      ans && localStorage.removeItem(target.dataset.name);
       renderSavedNames();
       break;
 
