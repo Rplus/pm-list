@@ -202,7 +202,7 @@ elm.export.addEventListener('click', () => {
   elm.exportLink.search = para.toString();
   elm.exportLink.innerText = '...';
 
-  let url = `https://script.google.com/macros/s/AKfycbzpbnnYoIv28lkcezbaj170ot7nNkHZMUvI7FI5UBUaQrdD3Kw/exec?url=${encodeURIComponent(elm.exportLink.href)}`;
+  let url = `https://cors-anywhere.herokuapp.com/tinyurl.com/api-create.php?url=${elm.exportLink.href}`;
 
   fetch(url)
   .then(d => d.text())
