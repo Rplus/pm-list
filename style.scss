@@ -72,9 +72,20 @@ button {
       calc(var(--pm-row) * var(--img-size) * -1);
   }
 
-
   &[data-state="1"] {
     background-color: #ffc;
+  }
+
+  &[data-dex="808"]::after {
+    background-image: url('./808.png');
+    background-position: 50% 50%;
+    background-size: cover;
+  }
+
+  &[data-dex="809"]::after {
+    background-image: url('./809.png');
+    background-position: 50% 50%;
+    background-size: cover;
   }
 }
 
