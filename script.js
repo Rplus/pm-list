@@ -13,6 +13,9 @@ let elm = {
   setName: $('.set-name'),
   export: $('.export'),
   exportLink: $('.export-link'),
+  checkedNum: $('.checked-num'),
+  copy: $('.copy'),
+  inverseCopy: $('.inverse-copy'),
 };
 
 let pmMap = {
@@ -168,7 +171,26 @@ let updatePmState = (dex, state) =>{
   pmMap.state[dex] = _state;
   console.log(dex, `${state} => ${_state}`);
   saveState();
+  updateChecked();
 };
+
+let updateChecked = (checkedState = 1) => {
+  let checked = Object.keys(pmMap.state).filter(dex => pmMap.state[dex] === checkedState);
+  elm.checkedNum.value = checked.join();
+  elm.copy.dataset.count = checked.length;
+};
+
+elm.inverseCopy.addEventListener('click', () => {
+  elm.inverseCopy.dataset.checkedstate = +elm.inverseCopy.dataset.checkedstate ? 0 : 1;
+  updateChecked(+elm.inverseCopy.dataset.checkedstate);
+});
+
+elm.copy.addEventListener('click', (e) => {
+  elm.checkedNum.select();
+  document.execCommand('copy');
+  alert(`已複製!\n${elm.checkedNum.value}`);
+  elm.checkedNum.blur();
+});
 
 let saveState = () => {
   let state = Object.keys(pmMap.state).filter(dex => pmMap.state[dex]).join('-');

@@ -152,3 +152,28 @@ label[for="show-unchecked"] {
   cursor: pointer;
   padding: 0 10px;
 }
+
+.copy-section {
+  margin-bottom: 1em;
+  display: flex;
+  justify-content: center;
+  padding-left: .5em;
+  padding-right: .5em;
+
+  & > * {
+    margin-left: .25em;
+    margin-right: .25em;
+  }
+}
+
+.copy {
+  &::after {
+    content: '(' attr(data-count) ')';
+    padding-left: 3px;
+  }
+}
+
+.checked-num {
+  flex-grow: 1;
+  max-width: 15em;
+}
