@@ -26,20 +26,26 @@ let pmMap = {
 
 let init = () => {
   let para = new URLSearchParams(location.search);
-  let name = para.get('name') || localStorage.getItem('latestName') || '';
-  let dex = para.get('dex') || '';
-  let _dex;
+  let paraname = para.get('name');
+  let paradex = para.get('dex') || '';
+  let hasOldName = paraname && !!localStorage.getItem(`T=${paraname}`);
+  let isOverwriteMode = hasOldName && confirm(`Confirm to overwirte ${paraname}?`);
+
+  if (isOverwriteMode) {
+    localStorage.setItem(`T=${paraname}`, paradex);
+  }
+
+  let name = isOverwriteMode ? paraname : (localStorage.getItem('latestName') || '');
+  let dex = localStorage.getItem(`T=${name}`) || '';
 
   if (name) {
     list.name = name;
-    _dex = localStorage.getItem(`T=${name}`) || '';
   }
 
-  if (dex || _dex) {
-    let allDex = `${dex}-${_dex}`.split('-').filter(Boolean);
+  if (dex) {
+    let allDex = dex.split('-').filter(Boolean);
     allDex = [...new Set(allDex)];
     pmMap.dex = allDex;
-
 
     allDex.forEach(dex => {
       updatePmState(dex, true);
