@@ -1,1 +1,244 @@
-"use strict";function _toConsumableArray(e){if(Array.isArray(e)){for(var t=0,a=Array(e.length);t<e.length;t++)a[t]=e[t];return a}return Array.from(e)}window.$=document.querySelector.bind(document),window.$$=document.querySelectorAll.bind(document);var toJSON=function(e){return e.json()};window.lang=navigator.language.split("-")[0];var elm={app:$(".app"),list:$(".list"),saved:$(".saved-lists"),title:$(".title"),reset:$(".reset"),setName:$(".set-name"),"export":$(".export"),exportLink:$(".export-link"),checkedNum:$(".checked-num"),copy:$(".copy"),inverseCopy:$(".inverse-copy")},pmMap={dex:[],elm:{},state:{}},init=function(){var e=new URLSearchParams(location.search),t=e.get("name")||localStorage.getItem("latestName")||"",a=e.get("dex")||"",n=void 0;if(t&&(list.name=t,n=localStorage.getItem("T="+t)||""),a||n){var r=(a+"-"+n).split("-").filter(Boolean);r=[].concat(_toConsumableArray(new Set(r))),pmMap.dex=r,r.forEach(function(e){updatePmState(e,!0)})}history.pushState(null,null,location.href.replace(location.search,""))},renderSavedNames=function(){elm.saved.innerHTML=Object.keys(localStorage).filter(function(e){return/^T\=/.test(e)}).map(function(e){return'<li>\n        <button data-name="'+e+'" data-action="delete">x</button>\n        <button data-name="'+e+'" data-action="replace">'+e.replace(/^T\=/,"")+"</button>\n      </li>"}).join("")};renderSavedNames();var list={set name(e){this.input.value!==e&&(this.input.value=e),localStorage.setItem("latestName",e)},get name(){return this.input.value},input:elm.title},updateMutilState=function(e){for(var t in pmMap.state){var a=pmMap.state[t],n=e.indexOf(t)!==-1?1:0;n!==a&&updatePmState(t,n)}};elm.reset.addEventListener("click",function(){var e=confirm("將清除 [ "+list.name+" ] 目前的勾選，是否繼續？");e&&updateMutilState([])}),elm.setName.addEventListener("click",function(){saveState(),renderSavedNames()}),elm.saved.addEventListener("click",function(e){var t=e.target;if(t.dataset&&t.dataset.action)switch(t.dataset.action){case"delete":var a=confirm("將刪除 [ "+t.dataset.name.replace(/^T\=/,"")+" ] 紀錄，是否繼續？");a&&localStorage.removeItem(t.dataset.name),renderSavedNames();break;case"replace":list.name=t.dataset.name.replace(/^T\=/,"");var n=localStorage.getItem(t.dataset.name),r=n.split("-");updateMutilState(r)}});var img=function(e){var t=e-1,a=~~(t/28),n=t%28;return"--pm-row: "+a+"; --pm-col: "+n},genPM=function(e){return'<div class="pm" data-dex="'+e.dex+'" data-state="'+e.state+'" style="'+img(e.dex)+'">'+e.dex+" "+e.name+"</div>"},renderList=function(e){elm.list.innerHTML=e.map(genPM).join(""),elm.list.addEventListener("click",clickPM),[].slice.apply($$(".pm")).forEach(function(e){var t=e.dataset;pmMap.elm[t.dex]=e,pmMap.state[t.dex]=+t.state}),init()},clickPM=function(e){var t=e.target;t.classList.contains("pm")&&updatePmState(t.dataset.dex,!+t.dataset.state)},updatePmState=function(e,t){var a=t?1:0;pmMap.elm[e].dataset.state=a,pmMap.state[e]=a,console.log(e,t+" => "+a),saveState(),updateChecked()},updateChecked=function(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:1,t=Object.keys(pmMap.state).filter(function(t){return pmMap.state[t]===e});elm.checkedNum.value=t.join(),elm.copy.dataset.count=t.length};elm.inverseCopy.addEventListener("click",function(){elm.inverseCopy.dataset.checkedstate=+elm.inverseCopy.dataset.checkedstate?0:1,updateChecked(+elm.inverseCopy.dataset.checkedstate)}),elm.copy.addEventListener("click",function(){elm.checkedNum.select(),document.execCommand("copy"),alert("已複製!\n"+elm.checkedNum.value),elm.checkedNum.blur()});var saveState=function(){var e=Object.keys(pmMap.state).filter(function(e){return pmMap.state[e]}).join("-");localStorage.setItem("T="+list.name,e),list.name=list.name},remap=function(e){var t=[];for(var a in e){var n=e[a][lang]||e[+a].en;t[+a]={name:n,dex:+a,state:0}}return t.filter(Boolean)};fetch("./pm-name.json").then(toJSON).then(remap).then(renderList),elm["export"].addEventListener("click",function(){saveState();var e=list.name,t=new URLSearchParams({name:e,dex:localStorage.getItem("T="+e)});elm.exportLink.href="./",elm.exportLink.search=t.toString(),elm.exportLink.innerText="...";var a="https://cors-anywhere.herokuapp.com/tinyurl.com/api-create.php?url="+elm.exportLink.href;fetch(a).then(function(e){return e.text()}).then(function(t){console.log(t),elm.exportLink.href=t,elm.exportLink.innerText=e+": "+t})});
+'use strict';
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+window.$ = document.querySelector.bind(document);
+window.$$ = document.querySelectorAll.bind(document);
+
+var toJSON = function toJSON(d) {
+  return d.json();
+};
+window.lang = navigator.language.split('-')[0];
+
+var elm = {
+  app: $('.app'),
+  list: $('.list'),
+  saved: $('.saved-lists'),
+  title: $('.title'),
+  reset: $('.reset'),
+  setName: $('.set-name'),
+  export: $('.export'),
+  exportLink: $('.export-link'),
+  checkedNum: $('.checked-num'),
+  copy: $('.copy'),
+  inverseCopy: $('.inverse-copy')
+};
+
+var pmMap = {
+  dex: [],
+  elm: {},
+  state: {}
+};
+
+var init = function init() {
+  var para = new URLSearchParams(location.search);
+  var paraname = para.get('name');
+  var paradex = para.get('dex') || '';
+  var hasOldName = paraname && !!localStorage.getItem('T=' + paraname);
+  var isOverwriteMode = hasOldName && confirm('Confirm to overwirte ' + paraname + '?');
+
+  if (isOverwriteMode) {
+    localStorage.setItem('T=' + paraname, paradex);
+  }
+
+  var name = isOverwriteMode ? paraname : localStorage.getItem('latestName') || '';
+  var dex = localStorage.getItem('T=' + name) || '';
+
+  if (name) {
+    list.name = name;
+  }
+
+  if (dex) {
+    var allDex = dex.split('-').filter(Boolean);
+    allDex = [].concat(_toConsumableArray(new Set(allDex)));
+    pmMap.dex = allDex;
+
+    allDex.forEach(function (dex) {
+      updatePmState(dex, true);
+    });
+  }
+
+  history.pushState(null, null, location.href.replace(location.search, ''));
+};
+
+var renderSavedNames = function renderSavedNames() {
+  elm.saved.innerHTML = Object.keys(localStorage).filter(function (name) {
+    return (/^T\=/.test(name)
+    );
+  }).map(function (name) {
+    return '<li>\n        <button data-name="' + name + '" data-action="delete">x</button>\n        <button data-name="' + name + '" data-action="replace">' + name.replace(/^T\=/, '') + '</button>\n      </li>';
+  }).join('');
+};
+renderSavedNames();
+
+var list = {
+  set name(value) {
+    if (this.input.value !== value) {
+      this.input.value = value;
+    }
+    localStorage.setItem('latestName', value);
+  },
+  get name() {
+    return this.input.value;
+  },
+  input: elm.title
+};
+
+var updateMutilState = function updateMutilState(newStates) {
+  for (var dex in pmMap.state) {
+    var oldPmState = pmMap.state[dex];
+    var newPmState = newStates.indexOf(dex) !== -1 ? 1 : 0;
+
+    if (newPmState !== oldPmState) {
+      updatePmState(dex, newPmState);
+    }
+  }
+};
+
+elm.reset.addEventListener('click', function () {
+  var ans = confirm('\u5C07\u6E05\u9664 [ ' + list.name + ' ] \u76EE\u524D\u7684\u52FE\u9078\uFF0C\u662F\u5426\u7E7C\u7E8C\uFF1F');
+  if (!ans) {
+    return;
+  }
+  updateMutilState([]);
+});
+
+elm.setName.addEventListener('click', function () {
+  saveState();
+  renderSavedNames();
+});
+
+elm.saved.addEventListener('click', function (e) {
+  var target = e.target;
+
+  if (!target.dataset || !target.dataset.action) {
+    return;
+  }
+  switch (target.dataset.action) {
+    case 'delete':
+      var ans = confirm('\u5C07\u522A\u9664 [ ' + target.dataset.name.replace(/^T\=/, '') + ' ] \u7D00\u9304\uFF0C\u662F\u5426\u7E7C\u7E8C\uFF1F');
+      ans && localStorage.removeItem(target.dataset.name);
+      renderSavedNames();
+      break;
+
+    case 'replace':
+      list.name = target.dataset.name.replace(/^T\=/, '');
+
+      var newState = localStorage.getItem(target.dataset.name);
+      var newStates = newState.split('-');
+
+      updateMutilState(newStates);
+      break;
+
+    default:
+      break;
+  }
+});
+
+var img = function img(dex) {
+  var index = dex - 1;
+  var row = ~~(index / 28);
+  var col = index % 28;
+  return '--pm-row: ' + row + '; --pm-col: ' + col;
+};
+
+var genPM = function genPM(pm) {
+  return '<div class="pm" data-dex="' + pm.dex + '" data-state="' + pm.state + '" style="' + img(pm.dex) + '">' + pm.dex + ' ' + pm.name + '</div>';
+};
+
+var renderList = function renderList(pms) {
+  elm.list.innerHTML = pms.map(genPM).join('');
+  elm.list.addEventListener('click', clickPM);
+
+  [].slice.apply($$('.pm')).forEach(function (pmElm) {
+    var data = pmElm.dataset;
+    pmMap.elm[data.dex] = pmElm;
+    pmMap.state[data.dex] = +data.state;
+  });
+
+  init();
+};
+
+var clickPM = function clickPM(e) {
+  var pm = e.target;
+  if (!pm.classList.contains('pm')) {
+    return;
+  }
+  updatePmState(pm.dataset.dex, !+pm.dataset.state);
+};
+
+var updatePmState = function updatePmState(dex, state) {
+  var _state = state ? 1 : 0;
+  pmMap.elm[dex].dataset.state = _state;
+  pmMap.state[dex] = _state;
+  console.log(dex, state + ' => ' + _state);
+  saveState();
+  updateChecked();
+};
+
+var updateChecked = function updateChecked() {
+  var checkedState = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+
+  var checked = Object.keys(pmMap.state).filter(function (dex) {
+    return pmMap.state[dex] === checkedState;
+  });
+  elm.checkedNum.value = checked.join();
+  elm.copy.dataset.count = checked.length;
+};
+
+elm.inverseCopy.addEventListener('click', function () {
+  elm.inverseCopy.dataset.checkedstate = +elm.inverseCopy.dataset.checkedstate ? 0 : 1;
+  updateChecked(+elm.inverseCopy.dataset.checkedstate);
+});
+
+elm.copy.addEventListener('click', function (e) {
+  elm.checkedNum.select();
+  document.execCommand('copy');
+  alert('\u5DF2\u8907\u88FD!\n' + elm.checkedNum.value);
+  elm.checkedNum.blur();
+});
+
+var saveState = function saveState() {
+  var state = Object.keys(pmMap.state).filter(function (dex) {
+    return pmMap.state[dex];
+  }).join('-');
+  localStorage.setItem('T=' + list.name, state);
+  list.name = list.name;
+};
+
+var remap = function remap(data) {
+  var pms = [];
+  for (var dex in data) {
+    var name = data[dex][lang] || data[+dex].en;
+    pms[+dex] = {
+      name: name,
+      dex: +dex,
+      state: 0
+    };
+  }
+  return pms.filter(Boolean);
+};
+
+fetch('./pm-name.json').then(toJSON).then(remap).then(renderList);
+
+elm.export.addEventListener('click', function () {
+  saveState();
+  var name = list.name;
+  var para = new URLSearchParams({
+    name: name,
+    dex: localStorage.getItem('T=' + name)
+  });
+  elm.exportLink.href = './';
+  elm.exportLink.search = para.toString();
+  elm.exportLink.innerText = '...';
+
+  var url = 'https://cors-anywhere.herokuapp.com/tinyurl.com/api-create.php?url=' + elm.exportLink.href;
+
+  fetch(url).then(function (d) {
+    return d.text();
+  }).then(function (d) {
+    console.log(d);
+    elm.exportLink.href = d;
+    elm.exportLink.innerText = name + ': ' + d;
+  });
+});
