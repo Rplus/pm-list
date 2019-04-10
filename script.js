@@ -31,7 +31,7 @@ let init = () => {
   let hasOldName = paraname && !!localStorage.getItem(`T=${paraname}`);
   let isOverwriteMode = hasOldName && confirm(`Confirm to overwirte ${paraname}?`);
 
-  if (isOverwriteMode) {
+  if (isOverwriteMode || paraname) {
     localStorage.setItem(`T=${paraname}`, paradex);
   }
 
@@ -53,6 +53,7 @@ let init = () => {
   }
 
   history.pushState(null, null, location.href.replace(location.search, ''));
+  renderSavedNames();
 };
 
 let renderSavedNames = () => {
