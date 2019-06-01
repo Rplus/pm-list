@@ -176,7 +176,7 @@ let updatePmState = (dex, state) =>{
   let _state = state ? 1 : 0;
   pmMap.elm[dex].dataset.state = _state;
   pmMap.state[dex] = _state;
-  console.log(dex, `${state} => ${_state}`);
+  // console.log(dex, `${state} => ${_state}`);
   saveState();
   updateChecked();
 };
