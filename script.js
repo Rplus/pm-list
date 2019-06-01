@@ -2,7 +2,7 @@ window.$ = document.querySelector.bind(document);
 window.$$ = document.querySelectorAll.bind(document);
 
 const toJSON = (d) => d.json();
-window.lang = navigator.language.split('-')[0];
+window.lang = new URLSearchParams(location.hash.replace(/^#/, '')).get('lang') || navigator.language.split('-')[0];
 
 let elm = {
   app: $('.app'),
@@ -147,7 +147,7 @@ let img = (dex) => {
 
 let genPM = (pm) => {
   return (
-    `<div class="pm" data-dex="${pm.dex}" data-state="${pm.state}" style="${img(pm.dex)}">${pm.dex} ${pm.name}</div>`
+    `<div class="pm" data-dex="${pm.dex}" data-state="${pm.state}" style="${img(pm.dex)}" title="${pm.en}">${pm.dex} ${pm.name}</div>`
   );
 };
 
@@ -208,9 +208,10 @@ let saveState = () => {
 let remap = (data) => {
   let pms = [];
   for (let dex in data) {
-    let name = data[dex][lang] || data[+dex].en;
+    let name = data[dex][lang] || data[dex].en;
     pms[+dex] = {
       name: name,
+      en: data[dex].en,
       dex: +dex,
       state: 0,
     };
