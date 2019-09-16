@@ -1,7 +1,7 @@
 :root {
   --iv-percentage: 100;
-  --sprite-grid-col: 28;
-  --sprite-grid-row: 18;
+  --sprite-grid-col: 31;
+  --sprite-grid-row: 21;
   --img-size: 80px;
   --pm-sort-by: var(--pm-pokedex);
   --pm-sort-dir: -1;
@@ -62,7 +62,7 @@ button {
     right: 0;
     bottom: 5px;
     margin: auto;
-    background-image: url(./sprite1-4.png);
+    background-image: url(./sprite1-5.png);
     background-size:
       calc(var(--sprite-grid-col) * var(--img-size))
       calc(var(--sprite-grid-row) * var(--img-size));

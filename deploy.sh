@@ -9,7 +9,7 @@ set -e
 cp ./pm-name.json ./pm-list/
 cp ./img/808.png ./pm-list/
 cp ./img/809.png ./pm-list/
-cp ./img/sprite1-4.png ./pm-list/
+cp ./img/sprite1-5.png ./pm-list/
 
 # navigate into the build output directory
 cd 'pm-list'

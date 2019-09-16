@@ -135,11 +135,12 @@ elm.saved.addEventListener('click', (e) => {
   }
 });
 
+const SPRITE_COL = 31;
 
 let img = (dex) => {
   let index = dex - 1;
-  let row = ~~(index / 28);
-  let col = index % 28;
+  let row = ~~(index / SPRITE_COL);
+  let col = index % SPRITE_COL;
   return (
     `--pm-row: ${row}; --pm-col: ${col}`
   );
